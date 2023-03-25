@@ -1,93 +1,45 @@
-// import './css/styles.css';
-// import debounce from 'lodash.debounce';
-// import { fetchCountries } from './fetchCountries';
-// import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import { PixabayAPI } from './pixabay-api';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import createGalleryCards from '../templates/gallery-card.hbs';
 
-// const DEBOUNCE_DELAY = 300;
-// const refs = {
-//     input: document.querySelector('input#search-box'),
-//     countrtyList: document.querySelector('.country-list'),
-//     countryContainer: document.querySelector('.country-info'),
-// }
 
-// refs.input.addEventListener('input', debounce(handleSearch, DEBOUNCE_DELAY));
+const refs = {
+    formEl: document.querySelector('.search-form'),
+    loadMoreBtnEl: document.querySelector('.load-more'),
+    galleryEl: document.querySelector('.gallery'),
+}
 
-// function handleSearch(evt) {
-//     evt.preventDefault();
-//     const searchQuery = evt.target.value.trim();
+const pixabayAPI = new PixabayAPI();
 
-//     if (searchQuery === '') {
-//         clearMarkup();
-//     }
+refs.formEl.addEventListener('submit', handleSearchFormSubmit);
+refs.loadMoreBtnEl.addEventListener('click', handleLoadMoreBtnClick);
 
-//     fetchCountries(searchQuery)
-//         .then(data => {
-//             clearMarkup();
-//             chooseMarkup(data)
-//         })
-//         .catch(onFetchError);
-    
-// };
+function handleSearchFormSubmit(evt) {
+    evt.preventDefault();
 
-// function chooseMarkup(data) {
-//     if (data.length >= 2 && data.length <= 10) {
-//         createCountryListMarkup(data);
-//     }
-//     if (data.length === 1) {
-//         createCountryContainerMarkup(data);
-//     }
-//     if (data.length > 10) {
-//         Notify.info("Too many matches found. Please enter a more specific name.")
-//     };
-// }
+    pixabayAPI.query = evt.target.elements.searchQuery.value.trim();
 
-// function createCountryListMarkup(countryArray) {
-//     const makeElementMarkup = ({ flags, name }) => {
-//         return `
-//         <li class="list_item">
-//             <img class="list_img" src="${flags.svg}" alt="${name.official}" width=25>
-//             <span class="list_span">${name.official}</span>
-//         </li>`
-//     };
+    pixabayAPI.fetchPhotos()
+        .then(data => {
+            console.log(data)
 
-//     const makeListMarkup = countryArray.map(makeElementMarkup).join("");
-//     refs.countrtyList.insertAdjacentHTML("beforeend", makeListMarkup);
-// }
+            if (data.hits.length === 0) {
+                Notify.failure("Sorry, there are no images matching your search query. Please try again.");
+            }
 
-// function createCountryContainerMarkup(countryArray) {
-//     const makeCard = ({ capital, name, population, languages, flags }) => {
-//         return `
-//         <div class="country_header">
-//         <img class="list_img" src="${flags.svg}" alt="${name.official}" width=25>
-//             <span class="country_span">${name.official}</span>
-//         </div>
-//         <ul class="country_card_list">
-//             <li class="country_item">
-//                 <span class="country_key">Capital:</span>
-//                 <span class="country_value">${capital}</span>
-//             </li>
-//             <li class="country_item">
-//                 <span class="country_key">Population:</span>
-//                 <span class="country_value">${population}</span>
-//             </li>
-//             <li class="country_item">
-//                 <span class="country_key">Languages:</span>
-//                 <span class="country_value">${Object.values(languages)}</span>
-//             </li>
-//         </ul>
-//         `
-//     };
+            refs.galleryEl.innerHTML = createGalleryCards(data.hits);
+            refs.loadMoreBtnEl.classList.remove('is-hidden');
+        })
+        .catch(console.log)
+}
 
-//     const makeCardMarkup = countryArray.map(makeCard);
-//     refs.countryContainer.innerHTML = makeCardMarkup;
-// }
+function handleLoadMoreBtnClick() {
+    pixabayAPI.page += 1;
 
-// function onFetchError(err) {
-//     Notify.failure("Oops, there is no country with that name");
-// }
+    pixabayAPI.fetchPhotos()
+        .then(data => {
 
-// function clearMarkup() {
-//     refs.countryContainer.innerHTML = "";
-//     refs.countrtyList.innerHTML = "";
-// }
-console.log('Hi!!!!!!!!!!!!!')
+            refs.galleryEl.insertAdjacentHTML('beforeend', createGalleryCards(data.hits));
+        }
+        ).catch(console.log)
+}
