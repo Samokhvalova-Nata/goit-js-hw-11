@@ -30,4 +30,12 @@ export class PixabayAPI {
                 }
             );
     }
+
+    incrementPage() {
+        this.page += 1;
+    }
+
+    resetPage() {
+        this.page = 1;
+    }
 }   

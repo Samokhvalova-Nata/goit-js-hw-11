@@ -41,6 +41,8 @@ ol {
 }
 
 .form-wrap {
+  position: sticky;
+  top: -1px;
   display: flex;
   align-items: center;
   justify-content: center;
