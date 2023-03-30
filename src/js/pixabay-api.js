@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 export class PixabayAPI {
     #API_KEY = '8567776-638120a8f010cc2219911b3d1';
     #BASE_URL = 'https://pixabay.com/api/';
@@ -21,14 +23,13 @@ export class PixabayAPI {
             ...this.baseSearchParams,
         });
 
-        return fetch(`${this.#BASE_URL}?${searchParams}`)
-            .then( response => {
-                if (!response.ok) {
-                    throw new Error(res.statusText);
-                }
-                return response.json();
-                }
-            );
+        return axios.get(`${this.#BASE_URL}?`, {
+            params: {
+                q: this.query,
+                page: this.page,
+                ...this.baseSearchParams,
+            },
+        })
     }
 
     incrementPage() {
