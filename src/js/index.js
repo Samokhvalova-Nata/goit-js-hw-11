@@ -25,6 +25,8 @@ async function handleSearchFormSubmit(evt) {
 
     if (pixabayAPI.query === '') {
         Notify.failure("Sorry, enter something in search line.");
+        clearMarkup();
+        hideLoadMoreBtn();
         return;
     };
 
