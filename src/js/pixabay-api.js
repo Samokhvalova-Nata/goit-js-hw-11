@@ -16,20 +16,18 @@ export class PixabayAPI {
     safesearch: true,
     };
 
-    fetchPhotos() {
-        const searchParams = new URLSearchParams({
-            q: this.query,
-            page: this.page,
-            ...this.baseSearchParams,
-        });
-
-        return axios.get(`${this.#BASE_URL}?`, {
-            params: {
-                q: this.query,
-                page: this.page,
-                ...this.baseSearchParams,
-            },
-        })
+    async fetchPhotos() {
+        try {
+            return await axios.get(`${this.#BASE_URL}`, {
+                params: {
+                    q: this.query,
+                    page: this.page,
+                    ...this.baseSearchParams,
+                },
+            });
+        } catch (err) {
+            throw new Error(err.message);
+        }
     }
 
     incrementPage() {
