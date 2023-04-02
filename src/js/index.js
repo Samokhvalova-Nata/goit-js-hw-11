@@ -19,13 +19,13 @@ refs.loadMoreBtnEl.addEventListener('click', handleLoadMoreBtnClick);
 
 async function handleSearchFormSubmit(evt) {
     evt.preventDefault();
+    clearMarkup();
 
     pixabayAPI.query = evt.target.elements.searchQuery.value.trim();
     pixabayAPI.resetPage();
 
     if (pixabayAPI.query === '') {
         Notify.failure("Sorry, enter something in search line.");
-        clearMarkup();
         hideLoadMoreBtn();
         return;
     };
@@ -34,8 +34,8 @@ async function handleSearchFormSubmit(evt) {
         const { data } = await pixabayAPI.fetchPhotos();
         if (data.hits.length === 0) {
             Notify.failure("Sorry, there are no images matching your search query. Please try again.");
-            clearMarkup();
             hideLoadMoreBtn();
+            refs.formEl.reset();
             return;
         }
 
