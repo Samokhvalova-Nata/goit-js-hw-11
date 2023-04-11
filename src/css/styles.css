@@ -46,6 +46,7 @@ button {
   background-color: rgba(6, 6, 158, 0.932);
   height: 55px;
   width: 100%;
+  margin-top: 10px;
 }
 
 .search-form {
@@ -170,3 +171,9 @@ color: #000000;
 margin-right: 0;
 margin-left: 0;
 }
+
+/* #sentinel {
+  width: 300px;
+  height: 200px;
+  background-color: tomato;
+} */

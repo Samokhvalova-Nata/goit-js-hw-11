@@ -5,7 +5,7 @@ export class PixabayAPI {
     #BASE_URL = 'https://pixabay.com/api/';
 
     constructor() {
-        this.query = null;
+        this.query = '';
         this.page = 1;
         this.count = 40;
     }
