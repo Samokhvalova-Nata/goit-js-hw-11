@@ -25,6 +25,7 @@ ul {
   margin-top: 0;
   margin-bottom: 0;
   padding-left: 0;
+  list-style: none;
 }
 
 .list {
@@ -177,3 +178,8 @@ margin-left: 0;
   height: 200px;
   background-color: tomato;
 } */
+
+.navigation {
+  margin-top: 5px;
+  margin-left: 15px;
+}
