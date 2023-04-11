@@ -18,6 +18,7 @@ refs.formEl.addEventListener('submit', handleSearchFormSubmit);
 async function handleSearchFormSubmit(evt) {
     evt.preventDefault();
     clearMarkup();
+    observer.unobserve(refs.sentinel);
 
     pixabayAPI.query = evt.target.elements.searchQuery.value.trim();
     pixabayAPI.resetPage();
@@ -39,6 +40,10 @@ async function handleSearchFormSubmit(evt) {
         refs.galleryEl.innerHTML = createGalleryCards(data.hits);
         pixabayAPI.incrementPage();
 
+        if (Math.ceil(data.totalHits / pixabayAPI.count) !== pixabayAPI.page) {
+            observer.observe(refs.sentinel);
+        }
+
         gallery = new SimpleLightbox('.gallery  a', {
                 captionDelay: 250,
                 scrollZoom: false,
@@ -48,7 +53,7 @@ async function handleSearchFormSubmit(evt) {
     }
 };
 
-const onEntry = async (entries) => {
+    const onEntry = async (entries) => {
     for (const entry of entries) {
         if (entry.isIntersecting && pixabayAPI.query !== '') {
 
@@ -68,9 +73,10 @@ const onEntry = async (entries) => {
 
 const options = {
     rootMargin: '150px',
-}
+};
 const observer = new IntersectionObserver(onEntry, options);
-observer.observe(refs.sentinel);
+
+
 
 
 
